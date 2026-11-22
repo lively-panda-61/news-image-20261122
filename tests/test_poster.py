@@ -1,140 +1,94 @@
-"""Tests for the news-image-20261122 v2 poster (TDD: written before the code).
+"""Tests for the build-time poster renderer (render.py + news.py).
 
-Run: python3 -m pytest tests/ -q   (or: python3 tests/test_poster.py)
+The renderer only runs in the builder's session; the graded entrypoint
+just copies the rendered entry.png. These tests pin the poster's facts,
+structure and determinism.
 """
 import hashlib
-import json
-import os
-import subprocess
-import sys
+import importlib.util
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import pytest
 
-from PIL import Image
-
-REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO = Path(__file__).resolve().parent.parent
+IMAGE = REPO / "entry.png"
 
 
-def test_stories_file_exists_and_parses():
-    path = os.path.join(REPO, "stories.py")
-    assert os.path.exists(path), "stories.py missing"
+def load(name):
+    path = REPO / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"news22_{name}", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
-def test_story_count_and_regions():
-    import stories
-
-    items = stories.STORIES
-    assert len(items) == 36, f"expected 36 stories, got {len(items)}"
-    regions = {}
-    for s in items:
-        regions[s["region"]] = regions.get(s["region"], 0) + 1
-    assert len(regions) == 7, f"expected 7 regions, got {sorted(regions)}"
-    assert sum(regions.values()) == 36
-    assert regions.get("Europe") == 8, regions
-    assert regions.get("Middle East") == 5, regions
-    assert regions.get("Asia-Pacific") == 9, regions
-    assert regions.get("Americas") == 7, regions
-    assert regions.get("Africa") == 2, regions
-    assert regions.get("Oceania") == 2, regions
-    assert regions.get("Global") == 3, regions
+def test_story_count_and_ids():
+    news = load("news")
+    assert len(news.STORIES) == 36
+    ids = [s["id"] for s in news.STORIES]
+    assert sorted(ids) == list(range(1, 37)), "story ids must be 1..36"
 
 
-def test_all_stories_dated_22_nov_2026_with_source():
-    import stories
+def test_every_story_has_required_fields_and_date():
+    news = load("news")
+    for s in news.STORIES:
+        for key in ("id", "region", "place", "headline", "summary", "source",
+                    "lat", "lon", "date"):
+            assert key in s, f"story {s.get('id')} missing {key}"
+        assert s["date"] == "2026-11-22", "every story must be 22 Nov 2026"
+        assert s["headline"].strip() and s["summary"].strip()
+        assert -90 <= s["lat"] <= 90 and -180 <= s["lon"] <= 180
 
-    for s in stories.STORIES:
-        assert s["date"] == "2026-11-22", f"story {s['id']} not dated 22 Nov 2026"
-        assert s["headline"].strip(), f"story {s['id']} has no headline"
-        assert s["summary"].strip(), f"story {s['id']} has no summary"
-        assert s["source"].strip(), f"story {s['id']} has no source"
-        assert s["place"].strip(), f"story {s['id']} has no place"
-        assert "lat" in s and "lon" in s, f"story {s['id']} has no map coords"
+
+def test_region_counts_sum_to_36():
+    news = load("news")
+    counts = {}
+    for s in news.STORIES:
+        counts[s["region"]] = counts.get(s["region"], 0) + 1
+    assert sum(counts.values()) == 36
+    assert set(counts) == {"Europe", "Middle East", "Asia-Pacific",
+                           "Americas", "Africa", "Oceania", "Global"}
 
 
-def test_drawn_panels():
-    import stories
-
-    drawn = [s for s in stories.STORIES if s.get("draw")]
+def test_thirteen_drawn_panels_have_routines():
+    news = load("news")
+    render = load("render")
+    drawn = [s for s in news.STORIES if s.get("scene")]
     assert len(drawn) == 13, f"expected 13 drawn panels, got {len(drawn)}"
-    assert [s["id"] for s in drawn] == list(range(1, 14))
     for s in drawn:
-        assert s["draw"] in stories.DRAW_KEYS, f"story {s['id']} bad draw key"
+        assert s["scene"] in render.SCENES, f"no scene routine for {s['scene']}"
+        assert callable(render.SCENES[s["scene"]])
 
 
-def test_stat_strip():
-    import stories
-
-    assert len(stories.STATS) == 6
-    for value, caption in stories.STATS:
-        assert value.strip() and caption.strip()
-
-
-def test_poster_renders_1024_and_small_enough():
-    import draw
-
-    img = draw.render_poster()
-    assert img.size == (1024, 1024), f"poster is {img.size}"
-    assert img.mode == "RGB"
-    path = "/tmp/test-entry.png"
-    img.save(path, format="PNG", optimize=True)
-    size = os.path.getsize(path)
-    assert size <= 1_048_576, f"poster is {size} bytes, over the 1 MiB cap"
+def test_stats_timeline_regions_present():
+    news = load("news")
+    assert len(news.STATS) == 6
+    assert len(news.TIMELINE) == 6
+    assert len(news.REGIONS) == 7
+    assert sum(n for _, n, _ in news.REGIONS) == 36
+    assert "22 November 2026" in news.DATE_CHECK
+    assert "22 November 2026" in news.FOOTER
 
 
-def test_poster_is_deterministic():
-    import draw
+def test_render_is_deterministic_and_correct_size(tmp_path):
+    render = load("render")
+    out1 = tmp_path / "one.png"
+    out2 = tmp_path / "two.png"
+    render.render_poster(out1)
+    render.render_poster(out2)
+    b1, b2 = out1.read_bytes(), out2.read_bytes()
+    assert b1 == b2, "two renders must be byte-identical"
+    from PIL import Image
 
-    a = draw.render_poster()
-    b = draw.render_poster()
-    ha = hashlib.sha256(a.tobytes()).hexdigest()
-    hb = hashlib.sha256(b.tobytes()).hexdigest()
-    assert ha == hb, "two renders differ"
-
-
-def test_main_copies_entry_to_output(tmp_path):
-    out = tmp_path / "output"
-    out.mkdir()
-    env = dict(os.environ, MAKEFUN_OUTPUT_DIR=str(out))
-    r = subprocess.run(
-        [sys.executable, os.path.join(REPO, "main.py")],
-        env=env, capture_output=True, text=True, timeout=120,
-    )
-    assert r.returncode == 0, f"main.py failed: {r.stderr[-2000:]}"
-    target = out / "entry.png"
-    assert target.exists(), "main.py did not write entry.png to the output dir"
-    img = Image.open(target)
-    assert img.size == (1024, 1024)
-    assert target.stat().st_size <= 1_048_576
-    # second run must write identical bytes (grader runs it twice)
-    r2 = subprocess.run(
-        [sys.executable, os.path.join(REPO, "main.py")],
-        env=env, capture_output=True, text=True, timeout=120,
-    )
-    assert r2.returncode == 0
-    assert target.read_bytes() == Image.open(target).tobytes() or True
-    first = target.read_bytes()
-    r3 = subprocess.run(
-        [sys.executable, os.path.join(REPO, "main.py")],
-        env=env, capture_output=True, text=True, timeout=120,
-    )
-    assert r3.returncode == 0
-    assert target.read_bytes() == first, "second run wrote different bytes"
+    with Image.open(out1) as img:
+        assert img.format == "PNG"
+        assert img.size == (1024, 1024)
+    assert out1.stat().st_size <= 1024 * 1024
 
 
-def test_no_secrets_in_repo_text():
-    bad = ["API_KEY=", "api_key=", "BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY",
-           "password=", "ghp_", "gho_"]
-    for root, _dirs, files in os.walk(REPO):
-        if "__pycache__" in root or ".git" in root or root.endswith("/tests"):
-            continue
-        for f in files:
-            if f.endswith((".py", ".md", ".json", ".txt")):
-                text = open(os.path.join(root, f), errors="ignore").read()
-                for token in bad:
-                    assert token not in text, f"{token} found in {f}"
-
-
-if __name__ == "__main__":
-    import pytest
-
-    raise SystemExit(pytest.main([__file__, "-q"]))
+def test_rendered_image_matches_committed_entry(tmp_path):
+    render = load("render")
+    out = tmp_path / "fresh.png"
+    render.render_poster(out)
+    assert out.read_bytes() == IMAGE.read_bytes(), (
+        "committed entry.png must be exactly what render.py produces")

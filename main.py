@@ -1,26 +1,41 @@
-"""Entrypoint: render the Sunday 22 November 2026 front page to /output/entry.png.
+"""Entrypoint: copy the committed poster to /output/entry.png.
 
-The poster is drawn deterministically from stories.py, so two runs write
-identical bytes. The output directory honours MAKEFUN_OUTPUT_DIR when the
-harness sets it, and defaults to /output.
+Standard library only — no Pillow, no fonts, no drawing at grade time.
+The poster (entry.png) is rendered in the builder's session by render.py
+and committed to this repository; the competition rules bless exactly
+this shape: "the simplest program copies an image the repository holds".
+
+The output directory is honoured from MAKEFUN_OUTPUT_DIR (default
+/output). Nothing is ever deleted: only entry.png is written.
 """
+import hashlib
 import os
+import shutil
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+REPO = Path(__file__).resolve().parent
+SOURCE = REPO / "entry.png"
+DEFAULT_OUT_DIR = "/output"
 
-import draw
+
+def resolve_out_dir():
+    return os.environ.get("MAKEFUN_OUTPUT_DIR", DEFAULT_OUT_DIR)
 
 
-def main():
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    os.makedirs(out_dir, exist_ok=True)
-    img = draw.render_poster()
-    path = os.path.join(out_dir, "entry.png")
-    img.save(path, format="PNG", optimize=True)
-    print(f"wrote {path} ({os.path.getsize(path)} bytes, {img.size[0]}x{img.size[1]})")
-    return path
+def main(out_dir=None):
+    if not SOURCE.is_file():
+        print(f"missing {SOURCE}", file=sys.stderr)
+        return 1
+    dest_dir = Path(out_dir) if out_dir is not None else Path(resolve_out_dir())
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / "entry.png"
+    shutil.copyfile(SOURCE, dest)
+    digest = hashlib.sha256(dest.read_bytes()).hexdigest()
+    size = dest.stat().st_size
+    print(f"wrote {dest} ({size} bytes, sha256 {digest})")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
