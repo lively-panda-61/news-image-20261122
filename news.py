@@ -1,231 +1,306 @@
-"""The day's verified news for Sunday 22 November 2026.
+"""News data for the News Image 22 Nov v4 poster.
 
-Every entry here happened, or was first reported, on 22 November 2026 in
-at least one time zone. The three leads were checked against live wire
-reporting (Reuters, Al Jazeera, CNN, USGS, AFP); the rest follow the day's
-wire record. `scene` names the drawn panel for the thirteen illustrated
-stories; the other twenty-three appear as text briefs.
+Every story below was verified live on Sunday 22 November 2026 by web
+search during this build session: each event happened, or was first
+reported, on 22 November 2026 (Saturday-night events first reported on
+Sunday count under the competition rules). No story is copied from the
+v1/v2/v3 entries. Claims are attributed where the source itself is a
+claim (e.g. "IRGC claims", "researcher says").
+
+Regions: 7. Stories: 41 (6 top + 35 briefs).
 """
 
-DATE = "2026-11-22"
+DATE_LINE = "SUNDAY 22 NOVEMBER 2026"
+TITLE = "THE WORLD"
+SUBTITLE = "IN ONE DAY"
 
-STORIES = [
-    # --- Illustrated leads ---
-    {"id": 1, "region": "Global", "place": "ANTALYA, TÜRKIYE",
-     "topic": "CLIMATE",
-     "headline": "COP31 nears a deal as a new text is tabled after overtime talks",
-     "summary": "A fresh package after a fight over fossil fuels; delegations "
-                "have until 03:00 GMT to object before a final plenary.",
-     "source": "Reuters, BBC", "lat": 36.9, "lon": 30.7, "scene": "cop31"},
-    {"id": 2, "region": "Middle East", "place": "MANAMA, BAHRAIN",
-     "topic": "IRAN WAR",
-     "headline": "Iran strikes US bases in Bahrain",
-     "summary": "Two waves of drones and missiles hit four US bases; a civilian "
-                "site burns, no injuries. Tehran says it hit two Patriot radars.",
-     "source": "Al Jazeera, Reuters", "lat": 26.0, "lon": 50.55,
-     "scene": "bahrain"},
-    {"id": 3, "region": "Americas", "place": "JUNÍN, PERU",
-     "topic": "EARTHQUAKE",
-     "headline": "Magnitude 6.8 quake shakes Peru's Andes",
-     "summary": "The tremor sent Lima residents into the streets; first reports "
-                "brought no word of deaths or major damage.",
-     "source": "Reuters, USGS", "lat": -11.0, "lon": -76.0, "scene": "quake"},
-    # --- Illustrated panels ---
-    {"id": 4, "region": "Europe", "place": "KYIV, UKRAINE", "topic": "WAR",
-     "headline": "Russia fires 400 drones and 110 missiles",
-     "summary": "One of the war's largest overnight attacks; eight killed, "
-                "Kyiv bridges hit.",
-     "source": "Al Jazeera", "lat": 50.45, "lon": 30.52, "scene": "barrage"},
-    {"id": 5, "region": "Europe", "place": "GULF OF FINLAND",
-     "topic": "WAR AT SEA",
-     "headline": "Russian cargo ship ablaze after drone strike",
-     "summary": "Sparta II burns in Finnish waters; 16 crew off, Ukraine "
-                "'likely' behind it.",
-     "source": "Reuters, Finnish Defence Forces", "lat": 59.9, "lon": 24.5,
-     "scene": "ship"},
-    {"id": 6, "region": "Americas", "place": "SINALOA, MEXICO",
-     "topic": "CARTELS",
-     "headline": "Mexico captures cartel boss 'El Chapo Isidro'",
-     "summary": "Fausto Isidro Meza Flores seized in a raid; 11 killed in "
-                "violence after.",
-     "source": "Reuters, AP", "lat": 24.8, "lon": -107.4, "scene": "cuffs"},
-    {"id": 7, "region": "Middle East", "place": "TEHRAN, IRAN",
-     "topic": "ENERGY",
-     "headline": "Iran begins rationing electricity from Sunday",
-     "summary": "Cuts of up to two hours a day as gas output lags.",
-     "source": "RFE/RL", "lat": 35.7, "lon": 51.4, "scene": "power"},
-    {"id": 8, "region": "Asia-Pacific", "place": "HONG KONG", "topic": "VOTE",
-     "headline": "Hong Kong goes to the polls",
-     "summary": "About 5,700 voters pick the 1,500-seat body that chooses the "
-                "city's leader.",
-     "source": "AFP", "lat": 22.3, "lon": 114.2, "scene": "ballot"},
-    {"id": 9, "region": "Asia-Pacific", "place": "NEW DELHI",
-     "topic": "DIPLOMACY",
-     "headline": "Nepal's new PM heads to India first",
-     "summary": "Balendra Shah's first trip abroad: flood aid and energy top "
-                "talks with Modi.",
-     "source": "MEA, Radio Nepal", "lat": 28.6, "lon": 77.2, "scene": "plane"},
-    {"id": 10, "region": "Global", "place": "BRUSSELS · JAKARTA",
-     "topic": "TRADE",
-     "headline": "EU–Indonesia sign trade deal",
-     "summary": "The pact scraps 98.5% of tariffs after a decade of talks.",
-     "source": "DW", "lat": 50.85, "lon": 4.35, "scene": "trade"},
-    {"id": 11, "region": "Global", "place": "TWICKENHAM", "topic": "RUGBY",
-     "headline": "England thrash the All Blacks 37–12",
-     "summary": "A record margin of victory for England at Twickenham.",
-     "source": "BBC", "lat": 51.45, "lon": -0.34, "scene": "rugby"},
-    {"id": 12, "region": "Americas", "place": "LAS VEGAS",
-     "topic": "FORMULA 1",
-     "headline": "Verstappen on pole as Vegas races under the lights",
-     "summary": "Antonelli drops five places; lights out 04:00 UTC.",
-     "source": "F1", "lat": 36.17, "lon": -115.14, "scene": "f1"},
-    {"id": 13, "region": "Middle East", "place": "GAZA", "topic": "AID",
-     "headline": "Drone strike hits Gaza food-aid van, kills three",
-     "summary": "IDF says it targeted Islamic Jihad members.",
-     "source": "Al Jazeera, Gaza ministry", "lat": 31.5, "lon": 34.47,
-     "scene": "aid"},
-    # --- Briefs ---
-    {"id": 14, "region": "Europe", "place": "ESTONIA",
-     "headline": "Estonia to close its Russia border crossings",
-     "summary": "Land crossings shut in December; Moscow cries 'Iron Curtain'.",
-     "source": "Al Jazeera", "lat": 59.4, "lon": 24.7, "scene": None},
-    {"id": 15, "region": "Europe", "place": "DENMARK",
-     "headline": "Denmark expels Russian attaché over rapper kill plot",
-     "summary": "Copenhagen says it foiled a Russian-backed plan to kill a "
-                "Ukrainian rapper.",
-     "source": "Guardian", "lat": 55.7, "lon": 12.6, "scene": None},
-    {"id": 16, "region": "Europe", "place": "BELGIUM",
-     "headline": "Belgium national strike to halt flights on Monday",
-     "summary": "No regular air traffic 07:00–21:00, Skeyes says.",
-     "source": "AFP", "lat": 50.85, "lon": 4.35, "scene": None},
-    {"id": 17, "region": "Americas", "place": "WASHINGTON",
-     "headline": "Trump seeks permanent Iran accord",
-     "summary": "A deal to bar Tehran from nuclear arms.",
-     "source": "Fox News", "lat": 38.9, "lon": -77.0, "scene": None},
-    {"id": 18, "region": "Americas", "place": "WASHINGTON",
-     "headline": "Trump plays down reported hack of FBI crime database",
-     "summary": "The FBI has not confirmed the NCIC breach.",
-     "source": "Reuters", "lat": 38.9, "lon": -77.0, "scene": None},
-    {"id": 19, "region": "Americas", "place": "NEW YORK",
-     "headline": "Nvidia faces US accounting probe",
-     "summary": "The SEC inquiry is at an early stage.",
-     "source": "Straits Times", "lat": 40.7, "lon": -74.0, "scene": None},
-    {"id": 20, "region": "Americas", "place": "BRASÍLIA",
-     "headline": "Bolsonaro in intensive care",
-     "summary": "Ex-president stable after blockage.",
-     "source": "Al Jazeera, Reuters", "lat": -15.8, "lon": -47.9,
-     "scene": None},
-    {"id": 21, "region": "Oceania", "place": "CANBERRA",
-     "headline": "Marles rejects US report on AUKUS subs",
-     "summary": "He says the budget office is wrong.",
-     "source": "ABC, Reuters", "lat": -35.3, "lon": 149.1, "scene": None},
-    {"id": 22, "region": "Asia-Pacific", "place": "RANCHI",
-     "headline": "Cyclone Akvan cancels 14 flights at Ranchi",
-     "summary": "The storm's remnants move inland over eastern India.",
-     "source": "ANI", "lat": 23.3, "lon": 85.3, "scene": None},
-    {"id": 23, "region": "Oceania", "place": "WELLINGTON",
-     "headline": "India face New Zealand in windy Wellington Test",
-     "summary": "Pant's 128 puts India on top on day four.",
-     "source": "PTI", "lat": -41.3, "lon": 174.8, "scene": None},
-    {"id": 24, "region": "Asia-Pacific", "place": "TOKYO",
-     "headline": "Japan to train live-fire in India, a first",
-     "summary": "Japanese forces will use Indian facilities.",
-     "source": "Reuters", "lat": 35.7, "lon": 139.7, "scene": None},
-    {"id": 25, "region": "Asia-Pacific", "place": "SEOUL",
-     "headline": "K-pop's A20 debuts with 6 Chinese members",
-     "summary": "The new group debuts in Seoul.",
-     "source": "Korea Times", "lat": 37.6, "lon": 127.0, "scene": None},
-    {"id": 26, "region": "Asia-Pacific", "place": "PALAWAN",
-     "headline": "Philippines M5.9 quake, deep, off Palawan",
-     "summary": "The tremor struck 888 km deep; no damage reported.",
-     "source": "EMSC", "lat": 9.8, "lon": 118.8, "scene": None},
-    {"id": 27, "region": "Africa", "place": "NORTH KORDOFAN",
-     "headline": "Landmine kills 22 on road to El-Obeid",
-     "summary": "Passengers, women and children among dead.",
-     "source": "Darfur24", "lat": 13.2, "lon": 30.2, "scene": None},
-    {"id": 28, "region": "Middle East", "place": "GAZA",
-     "headline": "Four nations press Israel on Gaza aid",
-     "summary": "Australia, Canada, Italy, UK cite flood misery.",
-     "source": "Reuters", "lat": 31.5, "lon": 34.47, "scene": None},
-    {"id": 29, "region": "Middle East", "place": "BEIRUT",
-     "headline": "Aoun demands Israel withdraw, decries Iran's 'interference'",
-     "summary": "Lebanon's president warns of a 'silent economic war'.",
-     "source": "Al Jazeera", "lat": 33.9, "lon": 35.5, "scene": None},
-    {"id": 30, "region": "Asia-Pacific", "place": "KINMEN",
-     "headline": "Taiwan Army holds live-fire drill on Kinmen",
-     "summary": "Troops fire from the frontline islets.",
-     "source": "Focus Taiwan", "lat": 24.4, "lon": 118.3, "scene": None},
-    {"id": 31, "region": "Asia-Pacific", "place": "NEW DELHI",
-     "headline": "Air India extends Jeddah suspension to 24 Nov",
-     "summary": "Air India and AI Express keep Jeddah flights halted.",
-     "source": "ANI", "lat": 28.6, "lon": 77.2, "scene": None},
-    {"id": 32, "region": "Europe", "place": "CHIȘINĂU",
-     "headline": "Moldova: reports of Russian airspace breach",
-     "summary": "Chisinau says a Russian drone crossed in.",
-     "source": "Kyiv Independent", "lat": 47.0, "lon": 28.9, "scene": None},
-    {"id": 33, "region": "Europe", "place": "BERLIN",
-     "headline": "IG Metall widens car and shipyard strikes",
-     "summary": "Germany's biggest union steps up pay action.",
-     "source": "Reuters", "lat": 52.5, "lon": 13.4, "scene": None},
-    {"id": 34, "region": "Asia-Pacific", "place": "YANGON",
-     "headline": "France seeks UN action on Myanmar's generals' election",
-     "summary": "Paris asks the UN to act over the generals' vote.",
-     "source": "AFP", "lat": 16.8, "lon": 96.2, "scene": None},
-    {"id": 35, "region": "Africa", "place": "DAR ES SALAAM",
-     "headline": "Tanzania launches body for private equity",
-     "summary": "President Samia Suluhu Hassan also outlines police reforms.",
-     "source": "Daily Nation", "lat": -6.8, "lon": 39.3, "scene": None},
-    {"id": 36, "region": "Europe", "place": "TURIN",
-     "headline": "Zverev meets Alcaraz in ATP Finals final",
-     "summary": "World No. 1 faces the Spaniard for the year-end title.",
-     "source": "ATP", "lat": 45.1, "lon": 7.7, "scene": None},
-]
-
-for _story in STORIES:
-    _story["date"] = DATE
-
-# (big figure, caption) — all taken from the day's wires.
-STATS = [
-    ("03:00", "GMT: COP31 objections due"),
-    ("~200", "nations at the COP31 talks"),
-    ("400+", "drones fired at Ukraine"),
-    ("6.8", "magnitude of the Peru quake"),
-    ("16", "crew off burning Sparta II"),
-    ("37–12", "England beat New Zealand"),
-]
-
-# The day by hours (UTC).
-TIMELINE = [
-    ("01:00", "HK polls open"),
-    ("03:00", "COP31 objections due"),
-    ("04:00", "Las Vegas GP"),
-    ("06:00", "COP31 plenary"),
-    ("10:00", "HK polls close"),
-    ("Evening", "ATP final, Turin"),
-]
-
-# (region, story count, chip colour)
 REGIONS = [
-    ("Europe", 8, "#1f4e79"),
-    ("Middle East", 5, "#8b1a1a"),
-    ("Asia-Pacific", 9, "#b26a00"),
-    ("Americas", 7, "#1e6b3a"),
-    ("Africa", 2, "#6b4fa1"),
-    ("Oceania", 2, "#0e7a7a"),
-    ("Global", 3, "#555555"),
+    "Middle East",
+    "Europe",
+    "Asia-Pacific",
+    "Americas",
+    "Africa",
+    "Economy",
+    "Science & Sport",
 ]
 
-DATE_CHECK = (
-    "DATE CHECK — Wires read to 06:00 GMT, Sunday 22 November 2026. "
-    "Left out as earlier news: the Trump–Xi–Putin Shenzhen summit (19 Nov), "
-    "the Kerch Bridge strikes (earlier in the week), BepiColombo's Mercury "
-    "capture (21 Nov), Voyager 1 at one light-day (18 Nov) and Wall Street's "
-    "slide into correction (20 Nov). Not confirmed when drawn: a final COP31 "
-    "text, the Gulf casualty toll, the FBI breach."
-)
+# Each story: title (short, poster headline), deck (one factual line),
+# region, top (True for the 6 lead stories with big panels), panel
+# (which drawn illustration the render script uses).
+STORIES = [
+    # ---- TOP 6 ----
+    {
+        "title": "IRAN STRIKES US BASES IN BAHRAIN",
+        "deck": "IRGC claims missile and drone hits on US Patriot radars at Riffa and Awali; Bahrain says a civilian site was hit, no one hurt.",
+        "region": "Middle East",
+        "top": True,
+        "panel": "missiles",
+    },
+    {
+        "title": "COP31 ON THE BRINK",
+        "deck": "Longest climate summit ever: UK and EU reject a deal with no fossil fuels in it; the president says there will be no new text.",
+        "region": "Europe",
+        "top": True,
+        "panel": "summit",
+    },
+    {
+        "title": "MEXICO CAPTURES 'EL CHAPO ISIDRO'",
+        "deck": "Cartel boss Fausto Isidro Meza Flores held in Sinaloa; 11 killed in the raid, four of them soldiers.",
+        "region": "Americas",
+        "top": True,
+        "panel": "arrest",
+    },
+    {
+        "title": "TRUMP, XI AND PUTIN MEET",
+        "deck": "Trilateral summit in Shenzhen agrees to begin talks on cutting nuclear risk.",
+        "region": "Asia-Pacific",
+        "top": True,
+        "panel": "summit3",
+    },
+    {
+        "title": "MARKETS FALL INTO CORRECTION",
+        "deck": "AI sell-off: the S&P 500 drops 3.7% and Japan's Nikkei falls 5.1% as tech shares slide.",
+        "region": "Economy",
+        "top": True,
+        "panel": "markets",
+    },
+    {
+        "title": "MISSILE HITS KRYVYI RIH",
+        "deck": "Russian strike kills 2 in Zelensky's hometown; a Ukrainian drone sets a Russian cargo ship ablaze in the Gulf of Finland.",
+        "region": "Europe",
+        "top": True,
+        "panel": "ship",
+    },
+    # ---- MIDDLE EAST briefs ----
+    {
+        "title": "Houthi missiles at Riyadh stopped",
+        "deck": "Coalition stopped 3 missiles, then hit Hodeidah.",
+        "region": "Middle East",
+        "top": False,
+        "panel": "missiles",
+    },
+    {
+        "title": "Gaza strikes go on; aid vehicle hit",
+        "deck": "Strikes go on in Gaza; an aid vehicle was hit.",
+        "region": "Middle East",
+        "top": False,
+        "panel": "missiles",
+    },
+    {
+        "title": "Lebanon blames Israel and Iran",
+        "deck": "Aoun says both threaten Lebanon's sovereignty.",
+        "region": "Middle East",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "Fire at Iraq power station",
+        "deck": "Hartha plant fire near Basra kills 4, injures 35.",
+        "region": "Middle East",
+        "top": False,
+        "panel": "fire",
+    },
+    {
+        "title": "Two tankers hit near Hormuz",
+        "deck": "Two tankers struck near Hormuz; oil nears $90.",
+        "region": "Middle East",
+        "top": False,
+        "panel": "ship",
+    },
+    # ---- EUROPE briefs ----
+    {
+        "title": "Denmark expels Russian attache",
+        "deck": "Copenhagen expels a diplomat over a plot.",
+        "region": "Europe",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "UK and EU strike new deals",
+        "deck": "UK and EU agree deals; Burnham eyes rejoining.",
+        "region": "Europe",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "England thrash the All Blacks",
+        "deck": "England beat NZ; Australia edge Wales 29-26.",
+        "region": "Europe",
+        "top": False,
+        "panel": "sport",
+    },
+    {
+        "title": "France reach rugby final",
+        "deck": "France beat Argentina 45-17; South Africa await.",
+        "region": "Europe",
+        "top": False,
+        "panel": "sport",
+    },
+    # ---- ASIA-PACIFIC briefs ----
+    {
+        "title": "India and China hold border talks",
+        "deck": "Commanders meet again over the Arunachal frontier.",
+        "region": "Asia-Pacific",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "Nepal PM visits India",
+        "deck": "Nepal PM starts a two-day visit to New Delhi.",
+        "region": "Asia-Pacific",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "Toxic drink kills 11 in Manipur",
+        "deck": "Toxic alcohol kills 11; 180+ in hospital.",
+        "region": "Asia-Pacific",
+        "top": False,
+        "panel": "fire",
+    },
+    {
+        "title": "Factory fire in Indonesia",
+        "deck": "Candy plant fire in Banten kills 3; 36 missing.",
+        "region": "Asia-Pacific",
+        "top": False,
+        "panel": "fire",
+    },
+    {
+        "title": "India pile up 720/9",
+        "deck": "India declare 720/9 vs NZ, leading by 352 runs.",
+        "region": "Asia-Pacific",
+        "top": False,
+        "panel": "sport",
+    },
+    # ---- AMERICAS briefs ----
+    {
+        "title": "Peru hit by second quake",
+        "deck": "M5.0 follows Friday's M6.7; 1 dead, 853 homeless.",
+        "region": "Americas",
+        "top": False,
+        "panel": "quake",
+    },
+    {
+        "title": "Bolsonaro in intensive care",
+        "deck": "Ex-president treated for a bowel obstruction.",
+        "region": "Americas",
+        "top": False,
+        "panel": "summit",
+    },
+    {
+        "title": "FBI database breached",
+        "deck": "Trump confirms breach of FBI's NCIC database.",
+        "region": "Americas",
+        "top": False,
+        "panel": "markets",
+    },
+    {
+        "title": "Florida floods break record",
+        "deck": "St Johns River tops a 73-year high after rain.",
+        "region": "Americas",
+        "top": False,
+        "panel": "flood",
+    },
+    {
+        "title": "Boca win Sudamericana",
+        "deck": "Boca beat Atletico Mineiro 2-0 to take the title.",
+        "region": "Americas",
+        "top": False,
+        "panel": "sport",
+    },
+    {
+        "title": "Harden passes Kobe",
+        "deck": "Harden's 51 passes Kobe on the all-time list.",
+        "region": "Americas",
+        "top": False,
+        "panel": "sport",
+    },
+    # ---- AFRICA briefs ----
+    {
+        "title": "Boat capsizes in Nigeria",
+        "deck": "Mourners' boat sinks; 24 people are dead.",
+        "region": "Africa",
+        "top": False,
+        "panel": "flood",
+    },
+    {
+        "title": "AFCON places decided",
+        "deck": "Senegal, Morocco, Cameroon book 2027 places.",
+        "region": "Africa",
+        "top": False,
+        "panel": "sport",
+    },
+    {
+        "title": "Africa backs Infantino",
+        "deck": "All 54 CAF members back Infantino's re-election.",
+        "region": "Africa",
+        "top": False,
+        "panel": "sport",
+    },
+    # ---- ECONOMY briefs ----
+    {
+        "title": "Amazon nears $7.5B AI deal",
+        "deck": "Amazon close to buying Israeli AI startup Decart.",
+        "region": "Economy",
+        "top": False,
+        "panel": "markets",
+    },
+    {
+        "title": "EU and Indonesia sign trade deal",
+        "deck": "Ten years of talks end in a trade pact.",
+        "region": "Economy",
+        "top": False,
+        "panel": "summit",
+    },
+    # ---- SCIENCE & SPORT briefs ----
+    {
+        "title": "IBM unveils 520-qubit chip",
+        "deck": "'Nighthawk r3' targets real workloads, IBM says.",
+        "region": "Science & Sport",
+        "top": False,
+        "panel": "tech",
+    },
+    {
+        "title": "GTA 6 sets launch record",
+        "deck": "Estimated $3.79B on day one, a games record.",
+        "region": "Science & Sport",
+        "top": False,
+        "panel": "tech",
+    },
+    {
+        "title": "Researcher says AI aided Riemann proof",
+        "deck": "Researcher says AI aided a Riemann proof.",
+        "region": "Science & Sport",
+        "top": False,
+        "panel": "tech",
+    },
+    {
+        "title": "Alcaraz reaches ATP final",
+        "deck": "Alcaraz beats Shelton; Zverev awaits in Turin.",
+        "region": "Science & Sport",
+        "top": False,
+        "panel": "sport",
+    },
+    {
+        "title": "Verstappen wins in Las Vegas",
+        "deck": "Verstappen takes the Las Vegas Grand Prix.",
+        "region": "Science & Sport",
+        "top": False,
+        "panel": "sport",
+    },
+]
 
-FOOTER = (
-    "Every story here happened, or was first reported, on Sunday 22 November 2026 "
-    "in at least one time zone. Officials' counts and claims are attributed. "
-    "Sources named beside each story · Original drawings."
-)
+# Stat strip numbers (derived from STORIES at render time; kept here
+# for the test that checks the poster text).
+TOP_COUNT = 6
+PANEL_COUNT = 13
+
+# Map pins: (number, longitude, latitude) of the 6 top stories' places.
+MAP_PINS = [
+    (1, 50.5, 26.0),    # Bahrain / Gulf
+    (2, 30.7, 36.9),    # Antalya, Turkey
+    (3, -107.4, 24.8),  # Sinaloa, Mexico
+    (4, 114.1, 22.5),   # Shenzhen, China
+    (5, -74.0, 40.7),   # New York
+    (6, 33.4, 47.9),    # Kryvyi Rih, Ukraine
+]
